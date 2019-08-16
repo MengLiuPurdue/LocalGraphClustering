@@ -166,6 +166,18 @@ public:
     void assemble_graph_weighted(vector<bool>& mincut, vtype nverts, itype nedges, vector<tuple<vtype,vtype,double>>& EL);
     
 
+    //functions in SimpleLocal_weighted_new.cpp
+    void STAGEFLOW_weighted_new(double delta, double alpha, double beta, double fR, double gamma, double* levels, unordered_map<vtype,vtype>& fullyvisited, unordered_map<vtype,vtype>& R_map, unordered_map<vtype,vtype>& S);
+    vtype SimpleLocal_weighted_new(vtype nR, vtype* R, vtype* ret_set, double delta, double gamma, double* levels);
+    void init_VL_weighted_new(unordered_map<vtype,vtype>& VL, unordered_map<vtype,vtype>& VL_rev,unordered_map<vtype,vtype>& R_map);
+    void init_EL_weighted_new(vector< tuple<vtype,vtype,double> >& EL, unordered_map<vtype,vtype>& R_map, unordered_map<vtype,vtype>& VL, vtype s, vtype t, double alpha, 
+                   double fR, double delta, double gamma, double* levels);
+    void update_VL_weighted_new(unordered_map<vtype,vtype>& VL, unordered_map<vtype,vtype>& VL_rev, vector<vtype>& E);
+    void update_EL_weighted_new(vector< tuple<vtype,vtype,double> >& EL, unordered_map<vtype,vtype>& VL, unordered_map<vtype,vtype>& R_map, unordered_map<vtype,vtype>& W_map,
+                   vtype s, vtype t, double alpha, double fR, double delta, double gamma, double* levels);
+    void assemble_graph_weighted_new(vector<bool>& mincut, vtype nverts, itype nedges, vector<tuple<vtype,vtype,double>>& EL);
+
+
     //functions for capacity releasing diffusion
     vtype capacity_releasing_diffusion(vector<vtype>& ref_node, vtype U,vtype h,vtype w,vtype iterations,vtype* cut);
     void unit_flow(unordered_map<vtype,double>& Delta, vtype U, vtype h, vtype w, unordered_map<vtype,double>& f_v, 

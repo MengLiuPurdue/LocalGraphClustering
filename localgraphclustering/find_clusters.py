@@ -942,7 +942,7 @@ def semisupervised_learning(g,truth_dict,kwargs_list,nprocs=1,size_ratio=0.1,use
     total_vol = np.sum(g.d)
     def wrapper(pid,q_in,q_out):
         while True:
-            kwargs,kwargs_id,trial_id,delta,ratio = q_in.get()
+            kwargs,kwargs_id,trial_id,delta,delta1,ratio = q_in.get()
             if kwargs is None:
                 break
             nlabels = len(list(truth_dict.keys()))
@@ -957,7 +957,7 @@ def semisupervised_learning(g,truth_dict,kwargs_list,nprocs=1,size_ratio=0.1,use
                 npositives += len(truth)
                 true_labels[truth] = lid
                 nseeds = int(ratio*len(truth))
-                np.random.seed(int(1000*time.time())%(2**32 - 1))
+                np.random.seed(1000*kwargs_id+10*trial_id+lid)
                 seeds = np.random.choice(truth,nseeds)
                 if use_spectral:
                     l1reg_ids,l1reg_vals = approximate_PageRank(g,seeds,**kwargs)
@@ -966,11 +966,12 @@ def semisupervised_learning(g,truth_dict,kwargs_list,nprocs=1,size_ratio=0.1,use
                         if ranking[l1reg_ids[idx]] == -1 or i < ranking[l1reg_ids[idx]]:
                             ranking[l1reg_ids[idx]] = i
                             l1reg_labels[l1reg_ids[idx]] = lid
+                #flow_output1 = flow_clustering(g,seeds,method=flowmethod,delta=curr_vol/(total_vol-curr_vol))[0]
                 if use_bfs:
                     seeds = seed_grow_bfs_steps(g,seeds,1)
                 flow_output = flow_clustering(g,seeds,method=flowmethod,delta=delta)[0]
+                flow_output1 = flow_clustering(g,seeds,method=flowmethod,delta=delta1)[0]
                 curr_vol = np.sum(g.d[seeds])
-                flow_output1 = flow_clustering(g,seeds,method=flowmethod,delta=curr_vol/(total_vol-curr_vol))[0]
                 for i,idx in enumerate(flow_output):
                     if flow_labels[idx] == -1:
                         flow_labels[idx] = lid
@@ -1006,12 +1007,14 @@ def semisupervised_learning(g,truth_dict,kwargs_list,nprocs=1,size_ratio=0.1,use
         kwargs = copy.deepcopy(kwargs_list[kwargs_id])
         delta = kwargs["delta"]
         del kwargs["delta"]
+        delta1 = kwargs["delta1"]
+        del kwargs["delta1"]
         ratio = kwargs["ratio"]
         del kwargs["ratio"]
         for trial_id in range(ntrials):
-            q_in.put((kwargs,kwargs_id,trial_id,delta,ratio))
+            q_in.put((kwargs,kwargs_id,trial_id,delta,delta1,ratio))
     for _ in range(nprocs):
-        q_in.put((None,None,None,None,None))
+        q_in.put((None,None,None,None,None,None))
     procs = [mp.Process(target=wrapper,args=(pid,q_in,q_out)) for pid in range(nprocs)]
     for p in procs:
         p.start()

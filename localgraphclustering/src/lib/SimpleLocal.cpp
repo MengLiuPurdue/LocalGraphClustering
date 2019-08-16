@@ -409,8 +409,12 @@ vtype graph<vtype,itype>::SimpleLocal(vtype nR, vtype* R, vtype* ret_set, double
     }
 
     set_stats = get_stats(S,S.size());
-    alpha = 1.0 * get<1>(set_stats) / min(get<0>(set_stats), ai[n] - get<0>(set_stats));
-    //cout << "after first step: " << alpha << endl;
+    if (min(get<0>(set_stats), ai[n] - get<0>(set_stats)) == 0) {
+        alpha = numeric_limits<double>::max();
+    }
+    else {
+        alpha = 1.0 * get<1>(set_stats) / min(get<0>(set_stats), ai[n] - get<0>(set_stats));
+    }
     if (alpha >= alph0) {
         copy_results<vtype,itype>(R_map,ret_set,&actual_length);
         return actual_length;
@@ -418,6 +422,7 @@ vtype graph<vtype,itype>::SimpleLocal(vtype nR, vtype* R, vtype* ret_set, double
     while (alpha < alph0) {
         //cout << alpha << endl;
         copy_results<vtype,itype>(S,ret_set,&actual_length);
+        cout << alpha << " " << actual_length << endl;
         alph0 = alpha;
         beta = alpha * (fR + delta);
         clear_map<vtype,vtype>(fullyvisited);
@@ -435,7 +440,7 @@ vtype graph<vtype,itype>::SimpleLocal(vtype nR, vtype* R, vtype* ret_set, double
         }
     }
 
-    //cout << alpha << min(get<0>(set_stats), ai[n] - get<0>(set_stats)) << endl;
+    //cout << alpha << " " << actual_length << " " << min(get<0>(set_stats), ai[n] - get<0>(set_stats)) << endl;
     return actual_length;
     //return 0;
 }

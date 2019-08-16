@@ -36,5 +36,6 @@ def SimpleLocal(G, ref_nodes,
     """ 
     n = G.adjacency_matrix.shape[0]
     (actual_length,actual_xids) = SimpleLocal_cpp(n,G.ai,G.aj,len(ref_nodes),ref_nodes,delta)
-
+    if np.sum(G.d[actual_xids]) > np.sum(G.d)/2:
+        actual_xids = np.array(list(set(range(G._num_vertices)).difference(actual_xids)))
     return [actual_xids, G.compute_conductance(actual_xids)]

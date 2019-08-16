@@ -127,6 +127,10 @@ void graph<vtype,itype>::update_VL_weighted(unordered_map<vtype,vtype>& VL, unor
     }
 }
 
+
+// R_map stores the original seed set, W_map stores the local set from last iteration
+// WnR_map stores the difference between R_map and W_map, B_map stores nodes that are neighbors to a node 
+// in W_map and also not in W_map (i.e. nodes to expand on)
 template<typename vtype, typename itype>
 void graph<vtype,itype>::update_EL_weighted(vector<tuple<vtype,vtype,double>>& EL, unordered_map<vtype,vtype>& VL,
                                    unordered_map<vtype,vtype>& R_map, unordered_map<vtype,vtype>& W_map,
@@ -135,7 +139,6 @@ void graph<vtype,itype>::update_EL_weighted(vector<tuple<vtype,vtype,double>>& E
     if (!EL.empty() && EL.size() > 0) {
         EL.clear();
     }
-
     unordered_map<vtype,vtype> B_map;
     unordered_map<vtype,vtype> WnR_map;
     vtype ARR  = 0;
@@ -251,7 +254,8 @@ void save_VL(unordered_map<vtype,vtype> VL)
     wptr.close();
 }
 
-
+// R_map is the original seed set, fullyvisited is the set from mincut solver after each iteration, 
+// S is the set that will be returned, so S should be equal to fullyvisited from the last step
 template<typename vtype, typename itype>
 void graph<vtype,itype>::STAGEFLOW_weighted(double delta, double alpha, double beta, unordered_map<vtype,vtype>& fullyvisited,
                                    unordered_map<vtype,vtype>& R_map, unordered_map<vtype,vtype>& S)
@@ -394,7 +398,12 @@ vtype graph<vtype,itype>::SimpleLocal_weighted(vtype nR, vtype* R, vtype* ret_se
     }
 
     set_stats = get_stats_weighted(S,S.size());
-    alpha = 1.0 * get<1>(set_stats) / min(get<0>(set_stats), total_degree - get<0>(set_stats));
+    if (min(get<0>(set_stats), ai[n] - get<0>(set_stats)) == 0) {
+        alpha = numeric_limits<double>::max();
+    }
+    else {
+        alpha = 1.0 * get<1>(set_stats) / min(get<0>(set_stats), ai[n] - get<0>(set_stats));
+    }
     //cout << "after first step: " << alpha << endl;
     if (alpha >= alph0) {
         copy_results<vtype,itype>(R_map,ret_set,&actual_length);

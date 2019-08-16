@@ -44,6 +44,7 @@ from .proxl1PRaccel import *
 from .proxl1PRrand_cpp import *
 from .SimpleLocal_cpp import *
 from .SimpleLocal_weighted_cpp import *
+from .SimpleLocal_weighted_new_cpp import *
 from .sweepcut_cpp import *
 from .triangleclusters_cpp import *
 from .set_scores_cpp import *
