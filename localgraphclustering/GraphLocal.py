@@ -722,7 +722,7 @@ class GraphLocal:
     def draw(self,coords,alpha=1.0,nodesize=5,linewidth=1,
          nodealpha=1.0,edgealpha=1.0,edgecolor='k',nodemarker='o',
          axs=None,fig=None,values=None,cm=None,valuecenter=None,angle=30,
-         figsize=None,nodecolor='r'):
+         figsize=None,nodecolor='r',**kwargs):
 
 
         """
@@ -801,10 +801,10 @@ class GraphLocal:
                 else:
                     cm = plt.get_cmap("magma")
             self._plotting(drawing,edgecolor,edgealpha,linewidth,len(coords[0])==3,c=node_color_list,alpha=alpha*nodealpha,
-                edgecolors='none',s=nodesize,marker=nodemarker,zorder=2,cmap=cm,vmin=vmin,vmax=vmax)
+                edgecolors='none',s=nodesize,marker=nodemarker,zorder=2,cmap=cm,vmin=vmin,vmax=vmax,**kwargs)
         else:
             self._plotting(drawing,edgecolor,edgealpha,linewidth,len(coords[0])==3,c=nodecolor,alpha=alpha*nodealpha,
-                edgecolors='none',s=nodesize,marker=nodemarker,zorder=2)
+                edgecolors='none',s=nodesize,marker=nodemarker,zorder=2,**kwargs)
 
         return drawing
 
