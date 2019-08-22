@@ -126,16 +126,13 @@ vtype graph<vtype,itype>::MQI(vtype nR, vtype* R, vtype* ret_set)
     //cout << "iter: " << total_iter << " conductance: " << condNew << endl;
     total_iter ++;
     vtype nverts = nR + 2;
-    adj = new vector<Edge<vtype,itype>>[nverts];
-    for (int i = 0; i < nverts; i ++) {
-        adj[i].clear();
-    }
-    level = new int[nverts];
+    adj.resize(nverts);
+    adj.clear();
+    level.resize(nverts);
+    level.clear();
     vector<bool> mincut (nverts);
     build_list(R_map,degree_map,nR,nR+1,curvol,curcutsize);
     pair<double, vtype> retData = DinicMaxflow(nR, nR+1, nverts, mincut);
-    delete [] adj;
-    delete [] level;
     vtype nRold = nR;
     vtype nRnew = 0; 
     while(condNew < condOld){
@@ -164,16 +161,13 @@ vtype graph<vtype,itype>::MQI(vtype nR, vtype* R, vtype* ret_set)
             condNew = (double)curcutsize/(double)min(total_degree - curvol, curvol);
             //cout << "curvol: " << curvol << " condNew: " << condNew << endl;
             nverts = nRnew + 2;
-            adj = new vector<Edge<vtype,itype>>[nverts];
-            for (int i = 0; i < nverts; i ++) {
-                adj[i].clear();
-            }
-            level = new int[nverts];
+            adj.resize(nverts);
+            adj.clear();
+            level.resize(nverts);
+            level.clear();
             //vector<bool> mincut (nverts);
             build_list(R_map,degree_map,nRnew,nRnew+1,curvol,curcutsize);
             retData = DinicMaxflow(nRnew, nRnew + 1, nverts, mincut);
-            delete [] adj;
-            delete [] level;
             //cout << "here " << nedges << " " << curvol << " " << curcutsize << endl;
             //retData = max_flow_MQI<vtype, itype>(ai, aj, offset, curvol, curcutsize, nedges, nRnew + 2,
             //        R_map, degree_map, nRnew, nRnew + 1, mincut, Q, fin, pro, another_pro, dist, flow, cap, next, to);

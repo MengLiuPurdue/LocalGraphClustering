@@ -9,8 +9,8 @@ from .ncpplots import NCPPlots
 from .densest_subgraph import densest_subgraph
 from .multiclass_label_prediction import multiclass_label_prediction
 from .SimpleLocal import SimpleLocal
+from .StageFlow import *
 from .SimpleLocal_weighted import SimpleLocal_weighted
-from .SimpleLocal_weighted_new import SimpleLocal_weighted_new
 from .MQI import MQI
 from .MQI_weighted import MQI_weighted
 from .pageRank_nibble import PageRank_nibble

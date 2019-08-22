@@ -228,10 +228,10 @@ void graph<vtype,itype>::assemble_graph(vector<bool>& mincut, vtype nverts, ityp
 }
 
 template<typename vtype, typename itype>
-void free_space(int* level, vector< Edge<vtype,itype> > *adj)
+void free_space(vector<int>& level, vector<vector< Edge<vtype,itype> >>& adj)
 {
-    delete[] adj;
-    delete[] level;
+    adj.clear();
+    level.clear();
 }
 
 
@@ -276,14 +276,10 @@ void graph<vtype,itype>::STAGEFLOW(double delta, double alpha, double beta, unor
     double *flow = NULL, *cap = NULL;
     */
 
-    adj = new vector<Edge<vtype,itype>>[nverts];
-    level = new int[nverts];
+    adj.resize(nverts);
+    level.resize(nverts);
     vector<bool> mincut;
     assemble_graph(mincut,nverts,nedges,EL);
-    itype sum = 0;
-    for (vtype i = 0; i < nverts; i ++) {
-        sum += adj[i].size();
-    }
     //cout << "here sum: " << sum << endl;
 
 
@@ -295,7 +291,7 @@ void graph<vtype,itype>::STAGEFLOW(double delta, double alpha, double beta, unor
 
 
 
-    //cout << "ok " << get<0>(retData) << " " << get<1>(retData) << endl;
+    cout << "ok " << get<0>(retData) << " " << get<1>(retData) << endl;
     //vtype* source_set = (vtype*)malloc(sizeof(vtype) * get<1>(retData));
 
 
@@ -321,13 +317,9 @@ void graph<vtype,itype>::STAGEFLOW(double delta, double alpha, double beta, unor
         nverts = VL.size()+2;
         nedges = EL.size();
         //free_space<vtype,itype>(level, adj);
-        adj = new vector<Edge<vtype,itype>>[nverts];
-        level = new int[nverts];
+        adj.resize(nverts);
+        level.resize(nverts);
         assemble_graph(mincut,nverts,nedges,EL);
-        sum = 0;
-        for (vtype i = 0; i < nverts; i ++) {
-            sum += adj[i].size();
-        }
         /*
         if (EL.size() == 1840) {
             save_EL<vtype,itype>(EL);
@@ -344,7 +336,7 @@ void graph<vtype,itype>::STAGEFLOW(double delta, double alpha, double beta, unor
 
 
 
-        //cout << "ok " << get<0>(retData) << " " << get<1>(retData) << endl;
+        cout << "ok " << get<0>(retData) << " " << get<1>(retData) << endl;
         if (!E.empty() && E.size() > 0) {
             E.clear();
         }
@@ -410,11 +402,13 @@ vtype graph<vtype,itype>::SimpleLocal(vtype nR, vtype* R, vtype* ret_set, double
 
     set_stats = get_stats(S,S.size());
     if (min(get<0>(set_stats), ai[n] - get<0>(set_stats)) == 0) {
+        cout << "what?? " << get<0>(set_stats) << " " << ai[n] - get<0>(set_stats) << endl;
         alpha = numeric_limits<double>::max();
     }
     else {
         alpha = 1.0 * get<1>(set_stats) / min(get<0>(set_stats), ai[n] - get<0>(set_stats));
     }
+    cout << alpha << " " << S.size() << " " << get<0>(set_stats) << " " << ai[n] << " " << get<1>(set_stats) << endl;
     if (alpha >= alph0) {
         copy_results<vtype,itype>(R_map,ret_set,&actual_length);
         return actual_length;
@@ -422,7 +416,7 @@ vtype graph<vtype,itype>::SimpleLocal(vtype nR, vtype* R, vtype* ret_set, double
     while (alpha < alph0) {
         //cout << alpha << endl;
         copy_results<vtype,itype>(S,ret_set,&actual_length);
-        cout << alpha << " " << actual_length << endl;
+        //cout << alpha << " " << actual_length << endl;
         alph0 = alpha;
         beta = alpha * (fR + delta);
         clear_map<vtype,vtype>(fullyvisited);
@@ -438,6 +432,7 @@ vtype graph<vtype,itype>::SimpleLocal(vtype nR, vtype* R, vtype* ret_set, double
         else {
             alpha = numeric_limits<double>::max();
         }
+        cout << alpha << " " << S.size() << " " << get<0>(set_stats) << " " << ai[n] << " " << get<1>(set_stats) << endl;
     }
 
     //cout << alpha << " " << actual_length << " " << min(get<0>(set_stats), ai[n] - get<0>(set_stats)) << endl;

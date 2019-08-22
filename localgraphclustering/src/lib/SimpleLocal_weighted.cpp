@@ -216,10 +216,10 @@ void graph<vtype,itype>::assemble_graph_weighted(vector<bool>& mincut, vtype nve
 }
 
 template<typename vtype, typename itype>
-void free_space(int* level, vector< Edge<vtype,itype> > *adj)
+void free_space(vector<int>& level, vector<vector< Edge<vtype,itype> >>& adj)
 {
-    delete[] adj;
-    delete[] level;
+    adj.clear();
+    level.clear();
 }
 
 
@@ -276,14 +276,10 @@ void graph<vtype,itype>::STAGEFLOW_weighted(double delta, double alpha, double b
     itype nedges = EL.size();
 
 
-    adj = new vector<Edge<vtype,itype>>[nverts];
-    level = new int[nverts];
+    adj.resize(nverts);
+    level.resize(nverts);
     vector<bool> mincut;
     assemble_graph(mincut,nverts,nedges,EL);
-    itype sum = 0;
-    for (vtype i = 0; i < nverts; i ++) {
-        sum += adj[i].size();
-    }
     //cout << "here sum: " << sum << endl;
 
 
@@ -321,13 +317,9 @@ void graph<vtype,itype>::STAGEFLOW_weighted(double delta, double alpha, double b
         nverts = VL.size()+2;
         nedges = EL.size();
         //free_space<vtype,itype>(level, adj);
-        adj = new vector<Edge<vtype,itype>>[nverts];
-        level = new int[nverts];
+        adj.resize(nverts);
+        level.resize(nverts);
         assemble_graph(mincut,nverts,nedges,EL);
-        sum = 0;
-        for (vtype i = 0; i < nverts; i ++) {
-            sum += adj[i].size();
-        }
 
         //retData = max_flow_SL<vtype,itype>(s,t,Q,fin,pro,dist,next,to,mincut,another_pro,flow,cap,nverts);
         retData = DinicMaxflow(s,t,nverts,mincut);
@@ -404,7 +396,7 @@ vtype graph<vtype,itype>::SimpleLocal_weighted(vtype nR, vtype* R, vtype* ret_se
     else {
         alpha = 1.0 * get<1>(set_stats) / min(get<0>(set_stats), ai[n] - get<0>(set_stats));
     }
-    //cout << "after first step: " << alpha << endl;
+    // cout << "after first step: " << beta << " " << alpha << " " << S.size() << endl;
     if (alpha >= alph0) {
         copy_results<vtype,itype>(R_map,ret_set,&actual_length);
         return actual_length;
