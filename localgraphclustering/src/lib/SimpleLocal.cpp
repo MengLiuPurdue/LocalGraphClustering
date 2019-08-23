@@ -264,6 +264,7 @@ void graph<vtype,itype>::STAGEFLOW(double delta, double alpha, double beta, unor
     init_VL(VL,VL_rev,R_map);
     vtype t = VL.size()+1;
     init_EL(EL,R_map,VL,s,t,alpha,beta);
+    cout << "EL size " << EL.size() << " VL size " << VL.size() << endl;
     //cout << "EL size " << EL.size() << endl;
 
     //double F = 0;
@@ -299,20 +300,21 @@ void graph<vtype,itype>::STAGEFLOW(double delta, double alpha, double beta, unor
     vector<vtype> E;
     for (vtype i = 1; i < nverts-1; i ++){
         if (mincut[i] && fullyvisited.count(VL_rev[i]) == 0) {
+            cout << "new E element: " << VL_rev[i] << endl;
             E.push_back(VL_rev[i]);
             fullyvisited[VL_rev[i]];
         }
     }
     free_space<vtype,itype>(level, adj);
 
-    //cout << "size E: " << E.size() << endl;
+    cout << "size E: " << E.size() << endl;
 
 
     while (E.size() > 0 && get<1>(retData) > 1) {
         update_VL(VL, VL_rev, E);
         t = VL.size()+1;
         update_EL(EL, VL, R_map, fullyvisited, s, t, alpha, beta);
-        //cout << "EL size " << EL.size() << " VL size " << VL.size() << endl;
+        cout << "EL size " << EL.size() << " VL size " << VL.size() << endl;
 
         nverts = VL.size()+2;
         nedges = EL.size();
@@ -343,10 +345,12 @@ void graph<vtype,itype>::STAGEFLOW(double delta, double alpha, double beta, unor
         for (vtype i = 1; i < nverts-1; i ++){
             if (mincut[i] && fullyvisited.count(VL_rev[i]) == 0) {
                 E.push_back(VL_rev[i]);
+                cout << "new E element: " << VL_rev[i] << endl;
                 fullyvisited[VL_rev[i]];
             }
         }
         free_space<vtype,itype>(level, adj);
+        cout << "size E: " << E.size() << endl;
 
     }
 
