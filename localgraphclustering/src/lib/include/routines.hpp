@@ -169,7 +169,7 @@ public:
     //functions in 3StageFlow.cpp
     vtype STAGEFLOW_old(double delta, double alpha, unordered_map<vtype,vtype>& fullyvisited,
                         unordered_map<vtype,vtype>& R_map, unordered_map<vtype,vtype>& S,vtype* ret_set);
-    vtype STAGEFLOW_new(double delta, double alpha, unordered_map<vtype,vtype>& fullyvisited,
+    vtype STAGEFLOW_new(double delta, double alpha, double scale, unordered_map<vtype,vtype>& fullyvisited,
                         unordered_map<vtype,vtype>& R_map, unordered_map<vtype,vtype>& S,vtype* ret_set,
                         unordered_map<vtype,double>& v_map);
 
@@ -181,11 +181,14 @@ public:
     void assemble_graph_old(vector<bool>& mincut, vtype nverts, itype nedges, vector<tuple<vtype,vtype,double>>& EL);
     
     void init_VL_new(unordered_map<vtype,vtype>& VL, unordered_map<vtype,vtype>& VL_rev,unordered_map<vtype,vtype>& R_map);
-    void init_EL_new(vector< tuple<vtype,vtype,double> >& EL, unordered_map<vtype,vtype>& R_map, unordered_map<vtype,vtype>& VL, vtype s, vtype t, double alpha, 
-        double beta, unordered_map<vtype,vtype>& B_map, unordered_map<vtype,double>& v_map);
-    void update_VL_new(unordered_map<vtype,vtype>& VL, unordered_map<vtype,vtype>& VL_rev, unordered_map<vtype,vtype>& E);
-    void update_EL_new(vector< tuple<vtype,vtype,double> >& EL, unordered_map<vtype,vtype>& VL, unordered_map<vtype,vtype>& R_map, unordered_map<vtype,vtype>& W_map,
-                   unordered_map<vtype,vtype>& E, vtype s, vtype t, double alpha, double beta, vector<vtype>& B, unordered_map<vtype,double>& v_map);
+    void init_EL_new(vector<tuple<vtype,vtype,double>>& EL, unordered_map<vtype,vtype>& R_map,
+                     unordered_map<vtype,vtype>& VL, vtype s, vtype t, double alpha, double beta, 
+                     double scale, unordered_map<vtype,vtype>& B_map, unordered_map<vtype,double>& v_map);
+    void update_VL_new(unordered_map<vtype,vtype>& VL, unordered_map<vtype,vtype>& VL_rev,
+                        unordered_map<vtype,vtype>& E);
+    void update_EL_new(vector<tuple<vtype,vtype,double>>& EL, unordered_map<vtype,vtype>& VL,
+                        unordered_map<vtype,vtype>& R_map, unordered_map<vtype,vtype>& W_map,unordered_map<vtype,vtype>& E,
+                        vtype s, vtype t, double alpha, double beta, vector<vtype>& B, unordered_map<vtype,double>& v_map);
     void assemble_graph_new(vector<bool>& mincut, vtype nverts, itype nedges, vector<tuple<vtype,vtype,double>>& EL);
 
     //functions for capacity releasing diffusion
